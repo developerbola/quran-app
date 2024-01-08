@@ -1,0 +1,48 @@
+body {
+    min-height: 100vh;
+    background: #242424;
+    color: #fff;
+}
+
+audio {
+    background: transparent;
+}
+
+.react-audio-player {
+    width: 400px;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+/* Style for the audio controls */
+.react-audio-player audio {
+    width: 100%;
+    background-color: transparent;
+    outline: none;
+}
+
+/* Style for the play/pause button */
+.react-audio-player-play-pause {
+    color: #000;
+    background-color: transparent;
+    font-size: 20px;
+    cursor: pointer;
+    margin: 0 10px;
+}
+
+/* Style for the volume and progress controls */
+.react-audio-player-volume,
+.react-audio-player-progress {
+    display: inline-block;
+    margin: 0 10px;
+    background-color: transparent;
+
+}
+
+/* Style for the time display */
+.react-audio-player-time {
+    display: inline-block;
+    margin: 0 10px;
+    background-color: transparent;
+    font-size: 20px;
+}
