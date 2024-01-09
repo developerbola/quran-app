@@ -2,13 +2,14 @@ import { useEffect, useState } from "react";
 import { useSpeechRecognition } from "./useSpeechRecognition";
 import ReactAudioPlayer from "react-audio-player";
 import axios from "axios";
-
+import { Box, Button, Typography, TextareaAutosize } from "@mui/material";
 const SpeechRecognition = () => {
   const [value, setValue] = useState("");
   const [blocked, setBlocked] = useState(false);
   const [data, setData] = useState([]);
   const [surah, setSurah] = useState();
   const [ayahs, setAyahs] = useState([]);
+  const [speechEnd, setSpeechEnd] = useState(false);
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
 
   const handleEnded = () => {
@@ -28,15 +29,19 @@ const SpeechRecognition = () => {
     }
   };
 
-  const onEnd = (e) => {
-    // anything
+  const onSpeechEnd = () => {
+    stop();
+    setListening(false);
+    fetchData();
+    setSpeechEnd(true);
   };
 
-  const { listen, listening, stop, supported } = useSpeechRecognition({
-    onResult,
-    onError,
-    onEnd,
-  });
+  const { listen, listening, stop, supported, setListening } =
+    useSpeechRecognition({
+      onResult,
+      onError,
+      onSpeechEnd,
+    });
 
   function capitalizeFirstLetter(str) {
     return str.replace(/^\w/, (c) => c.toUpperCase());
@@ -103,23 +108,52 @@ const SpeechRecognition = () => {
 
   return (
     <>
-      <form>
+      <Box
+        sx={{
+          bgcolor: "#ffffff30",
+          height: "500px",
+          width: "700px",
+          borderRadius: "10px",
+          backdropFilter: "blur(10px)",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          flexDirection: "column",
+          gap: "10px",
+        }}
+      >
         {supported ? (
           <>
-            <p>
-              Gapirish: Sura nomi, oyat raqami {"( Baqara surasi 36-oyat )"}
-            </p>
-            <label htmlFor="transcript">Transcript</label>
-            <textarea
-              id="transcript"
-              name="transcript"
+            <Typography>Gapirish: Sura nomi {"( Baqara surasi )"}</Typography>
+            <TextareaAutosize
               value={value}
-              rows={3}
               disabled
+              style={{
+                resize: "none",
+                height: "230px",
+                width: "500px",
+                borderRadius: "10px",
+                background: "#ffffff30",
+                border: "1px solid #ffffff30",
+                color: "#fff",
+                padding: "20px",
+                fontSize: "1.3rem",
+                textTransform: "capitalize"
+              }}
             />
-            <button disabled={blocked} type="button" onClick={toggle}>
+            <Button
+              disabled={blocked}
+              type="button"
+              onClick={toggle}
+              variant="outlined"
+              sx={{
+                color: "#fff",
+                p: "10px 20px",
+                borderRadius: "20px",
+              }}
+            >
               {listening ? "To'xtatish" : "Tinglash"}
-            </button>
+            </Button>
             {blocked && (
               <p style={{ color: "red" }}>
                 The microphone is blocked for this site in your browser.
@@ -132,17 +166,19 @@ const SpeechRecognition = () => {
             qo'llab quvvatlamaydi!
           </p>
         )}
-      </form>
-      <div>
-        <h1>{surah ? surah.englishName : "Loading"}</h1>
-        <ReactAudioPlayer
-          className="react-audio-player"
-          src={ayahs.length ? ayahs[currentTrackIndex].audio : ""}
-          controls
-          autoPlay
-          onEnded={handleEnded}
-        />
-      </div>
+        <Box>
+          <Typography mb={"10px"} fontSize={"1.2rem"}>
+            {surah ? surah.englishName : "Surah Name"}
+          </Typography>
+          <ReactAudioPlayer
+            className="react-audio-player"
+            src={ayahs.length ? ayahs[currentTrackIndex].audio : ""}
+            controls
+            autoPlay={speechEnd}
+            onEnded={handleEnded}
+          />
+        </Box>
+      </Box>
     </>
   );
 };

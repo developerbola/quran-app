@@ -5,9 +5,9 @@ import "./Styles/App.css"
 const App = () => {
   return (
     <>
-      <div>
+      <main>
         <SpeechRecognition />
-      </div>
+      </main>
     </>
   );
 };
